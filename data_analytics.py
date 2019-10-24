@@ -1,5 +1,5 @@
 '''
-This file contains code for the data analytics module
+This file contains code for the data analytics module. To run: python data_analytics.py questions.py answers.py
 '''
 
 from textblob import TextBlob
