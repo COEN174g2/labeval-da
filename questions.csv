@@ -1,0 +1,11 @@
+questions
+id,description,is_open,created_at,updated_at
+1,The labs helped me understand the lecture material,FALSE,,
+2,The labs taught me new skills.,FALSE,,
+3,The labs taught me to think creatively.,FALSE,,
+4,I would be able to repeat the labs without help.,FALSE,,
+5,The lab instructor was supportive,FALSE,,
+6,The lab instructor was able to answer my questions.,FALSE,,
+7,The lab instructor was approachable.,FALSE,,
+8,What’s your favorite aspect of the lab? ,TRUE,,
+9,What about the lab would you like to see improved?,TRUE,,
