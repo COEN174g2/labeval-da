@@ -10,7 +10,7 @@ import csv
 import sys
 import math
 
-def create_histogram(question_num, distribution_list, fig_list):
+def create_histogram(question_num, distribution_list):
 
     answer_list = []
     for index, val in enumerate(distribution_list):
@@ -31,15 +31,17 @@ def create_histogram(question_num, distribution_list, fig_list):
     plt.title("Histogram for Question {}".format(question_num))
     plt.xlabel("Choice")
     plt.ylabel("Number of Students Choosing")
-    fig_list.append(fig)
+    plt.savefig("histogram_question_{}".format(question_num)) # saves the figure as a file
     
 def calc_mean(distribution_list):
+
     summation = 0
     for choice, num_responses in enumerate(distribution_list):
         summation+=(choice+1)*num_responses
     return summation/len(distribution_list)
 
 def calc_standard_deviation(distribution_list):
+
     list_of_responses = []
     for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
@@ -48,6 +50,7 @@ def calc_standard_deviation(distribution_list):
     return round(statistics.stdev(list_of_responses),1)
 
 def calc_median(distribution_list):
+
     list_of_responses = []
     for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
@@ -55,6 +58,7 @@ def calc_median(distribution_list):
     return statistics.median(list_of_responses)
 
 def calc_mode(distribution_list):
+
     list_of_responses = []
     for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
@@ -64,8 +68,6 @@ def calc_mode(distribution_list):
     return list(set(filter(lambda val: list_of_responses.count(val) == most, list_of_responses)))
 
 def numerical_metrics(): 
-
-    fig_list = []
 
     for key, distribution_list in question_dict.items():
         num_students_most_popular_choice = max(distribution_list)
@@ -78,10 +80,7 @@ def numerical_metrics():
         print("- Median value of numeric response is {}".format(calc_median(distribution_list)))
         print("- Standard deviation of numeric response is {}".format(calc_standard_deviation(distribution_list)))
         print("------------------------------")
-        create_histogram(key, distribution_list, fig_list)
-
-    #for fig in fig_list:
-    #    fig.show()
+        create_histogram(key, distribution_list)
 
 def sentiment_analysis():
 
@@ -126,9 +125,8 @@ def sentiment_analysis():
     print("Total number of objective responses for all textual questions: {}".format(num_objective))
     print("Total number of subjective responses for all textual questions: {}".format(num_subjective))
             
-
-
 def parse():
+
     global student_count
     with open(answers_file) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter = ',', quotechar ='"', quoting = csv.QUOTE_ALL)
@@ -137,7 +135,6 @@ def parse():
         line_count = 0
 
         for row in csv_reader:
-            
             if line_count % num_questions == 0:
                 student_count+=1
                 student_dict[student_count] = [] # create an empty list to hold the student's responses
@@ -154,6 +151,7 @@ def parse():
                     question_dict[index+1][int(response)-1]+=1
 
 def main():
+
     parse()
     print("Student dict content is: \n {}".format(student_dict))
     print("------------------------------")
@@ -174,4 +172,4 @@ answers_file = sys.argv[2]
 
 if __name__ == '__main__':
     main()
-    plt.show()
+    plt.show() # show all the figures
