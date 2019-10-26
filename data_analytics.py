@@ -1,18 +1,14 @@
 '''
-This file contains code for the data analytics module. To run: python data_analytics.py questions.py answers.py
+This file contains code for the data analytics module. To run: python data_analytics.py questions.csv answers.csv
 '''
 
 from textblob import TextBlob
 import matplotlib.pyplot as plt
 import numpy as np
 import statistics
-import nltk
 import csv 
 import sys
 import math
-
-#def histogram():
-#    np.histogram([1, 2, 1], bins=[0, 1, 2, 3])
 
 def create_histogram(question_num, distribution_list, fig_list):
 
@@ -22,26 +18,21 @@ def create_histogram(question_num, distribution_list, fig_list):
             answer_list.append(index+1)
 
     num_bins = num_choices
-    lb, ub = 1, 6 # lower bound, upper bound
+    lower_bound, upper_bound = 1, num_choices+1 
 
     y = np.asarray(answer_list)
-    # caluculate histogram
-    hist, bin_edges = np.histogram(y, num_bins, range=(lb, ub))
+    hist, bin_edges = np.histogram(y, num_bins, range=(lower_bound, upper_bound))
     width = (bin_edges[1] - bin_edges[0])
-
-    # plot histogram
     fig = plt.figure()
-    plt.bar(bin_edges[:-1], hist, align='center', width=width, edgecolor='k', facecolor='green', alpha=0.5)
+    plt.bar(bin_edges[:-1], hist, align='center', width=width, edgecolor='k', facecolor='blue', alpha=0.5)
     plt.xticks(range(num_bins+1))
-    yint = range(min(distribution_list), math.ceil(max(distribution_list))+1)
-    plt.yticks(yint)
-    plt.xlim([lb-width/2, ub-width/2])
+    plt.yticks(range(max(distribution_list)+1))
+    plt.xlim([lower_bound-width/2, upper_bound-width/2])
     plt.title("Histogram for Question {}".format(question_num))
     plt.xlabel("Choice")
     plt.ylabel("Number of Students Choosing")
     fig_list.append(fig)
     
-
 def calc_mean(distribution_list):
     summation = 0
     for choice, num_responses in enumerate(distribution_list):
@@ -89,8 +80,8 @@ def numerical_metrics():
         print("------------------------------")
         create_histogram(key, distribution_list, fig_list)
 
-    for fig in fig_list:
-        fig.show()
+    #for fig in fig_list:
+    #    fig.show()
 
 def sentiment_analysis():
 
@@ -121,7 +112,7 @@ def sentiment_analysis():
                     status.append("objective")
                     num_objective+=1
                 elif subjectivity > 0.5:
-                    status.append("subjective")
+                    status.append("Subjective")
                     num_subjective+=1
 
                 if len(status) == 0:
