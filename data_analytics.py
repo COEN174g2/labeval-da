@@ -9,41 +9,63 @@ import statistics
 import nltk
 import csv 
 import sys
+import math
 
 #def histogram():
 #    np.histogram([1, 2, 1], bins=[0, 1, 2, 3])
 
-def create_histogram(answer_list):
-    new_histogram = np.histogram(answer_list, bins = list(range(1, num_choices)))
-    plt.hist(new_histogram, bins = num_choices)
-    plt.ylabel("Number of students")
-    plt.xlabel("Answer choice")
-    plt.show()
+def create_histogram(question_num, distribution_list, fig_list):
 
-def calc_mean(answer_list):
+    answer_list = []
+    for index, val in enumerate(distribution_list):
+        for i in range(val):
+            answer_list.append(index+1)
+
+    num_bins = num_choices
+    lb, ub = 1, 6 # lower bound, upper bound
+
+    y = np.asarray(answer_list)
+    # caluculate histogram
+    hist, bin_edges = np.histogram(y, num_bins, range=(lb, ub))
+    width = (bin_edges[1] - bin_edges[0])
+
+    # plot histogram
+    fig = plt.figure()
+    plt.bar(bin_edges[:-1], hist, align='center', width=width, edgecolor='k', facecolor='green', alpha=0.5)
+    plt.xticks(range(num_bins+1))
+    yint = range(min(distribution_list), math.ceil(max(distribution_list))+1)
+    plt.yticks(yint)
+    plt.xlim([lb-width/2, ub-width/2])
+    plt.title("Histogram for Question {}".format(question_num))
+    plt.xlabel("Choice")
+    plt.ylabel("Number of Students Choosing")
+    fig_list.append(fig)
+    
+
+def calc_mean(distribution_list):
     summation = 0
-    for choice, num_responses in enumerate(answer_list):
+    for choice, num_responses in enumerate(distribution_list):
         summation+=(choice+1)*num_responses
-    return summation/len(answer_list)
+    return summation/len(distribution_list)
 
-def calc_standard_deviation(answer_list):
+def calc_standard_deviation(distribution_list):
     list_of_responses = []
-    for choice, num_responses in enumerate(answer_list):
+    for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
             list_of_responses.append(choice+1)
 
     return round(statistics.stdev(list_of_responses),1)
 
-def calc_median(answer_list):
+def calc_median(distribution_list):
     list_of_responses = []
-    for choice, num_responses in enumerate(answer_list):
+    for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
             list_of_responses.append(choice+1)
     return statistics.median(list_of_responses)
 
-def calc_mode(answer_list):
+def calc_mode(distribution_list):
     list_of_responses = []
-    for choice, num_responses in enumerate(answer_list):
+    for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
             list_of_responses.append(choice+1)
 
@@ -52,18 +74,23 @@ def calc_mode(answer_list):
 
 def numerical_metrics(): 
 
-    for key, answer_list in question_dict.items():
-        num_students_most_popular_choice = max(answer_list)
-        most_popular_choice = answer_list.index(num_students_most_popular_choice) + 1 # the first answer choice starts at 1
+    fig_list = []
+
+    for key, distribution_list in question_dict.items():
+        num_students_most_popular_choice = max(distribution_list)
+        most_popular_choice = distribution_list.index(num_students_most_popular_choice) + 1 # the first answer choice starts at 1
         print("For question {}:".format(key))
-        print("- Number of students choosing each numeric choice: {}".format(answer_list))
+        print("- Number of students choosing each numeric choice: {}".format(distribution_list))
         print("- Most chosen numeric choice is {}".format(most_popular_choice))
-        print("- Mean value of numeric response is {}".format(calc_mean(answer_list)))
-        print("- Mode value(s) of numeric response is/are {}".format(calc_mode(answer_list)))
-        print("- Median value of numeric response is {}".format(calc_median(answer_list)))
-        print("- Standard deviation of numeric response is {}".format(calc_standard_deviation(answer_list)))
+        print("- Mean value of numeric response is {}".format(calc_mean(distribution_list)))
+        print("- Mode value(s) of numeric response is/are {}".format(calc_mode(distribution_list)))
+        print("- Median value of numeric response is {}".format(calc_median(distribution_list)))
+        print("- Standard deviation of numeric response is {}".format(calc_standard_deviation(distribution_list)))
         print("------------------------------")
-        create_histogram(answer_list)
+        create_histogram(key, distribution_list, fig_list)
+
+    for fig in fig_list:
+        fig.show()
 
 def sentiment_analysis():
 
@@ -156,3 +183,4 @@ answers_file = sys.argv[2]
 
 if __name__ == '__main__':
     main()
+    plt.show()
