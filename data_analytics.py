@@ -24,7 +24,7 @@ def create_histogram(question_num, distribution_list):
     hist, bin_edges = np.histogram(y, num_bins, range=(lower_bound, upper_bound))
     width = (bin_edges[1] - bin_edges[0])
     fig = plt.figure()
-    plt.bar(bin_edges[:-1], hist, align='center', width=width, edgecolor='k', facecolor='blue', alpha=0.5)
+    plt.bar(bin_edges[:-1], hist, align='center', width=width*0.6, edgecolor='k', facecolor='blue', alpha=0.5)
     plt.xticks(range(num_bins+1))
     plt.yticks(range(max(distribution_list)+1))
     plt.xlim([lower_bound-width/2, upper_bound-width/2])
@@ -89,6 +89,8 @@ def sentiment_analysis():
     num_objective = 0
     num_subjective = 0
 
+    num_textual_questions = 0
+
     for key, response_list in student_dict.items():
         print("Performing sentiment analysis on textual responses from student {}".format(key))
         for index, response in enumerate(response_list):
@@ -97,6 +99,7 @@ def sentiment_analysis():
                 polarity = obj.sentiment.polarity # a value within the range [-1.0,1.0]
                 subjectivity = obj.sentiment.subjectivity # a value between [0.0,1.0]
                 status = []
+                num_textual_questions+=1
 
                 if polarity == 0:
                     status.append("Neutral")
@@ -120,10 +123,30 @@ def sentiment_analysis():
                     print("Question {}: {} response".format(index+1, status[0]))                
 
         print("------------------------------")
-    print("Total number of positive responses for all textual questions: {}".format(num_positive))
-    print("Total number of negative responses for all textual questions: {}".format(num_negative))
-    print("Total number of objective responses for all textual questions: {}".format(num_objective))
-    print("Total number of subjective responses for all textual questions: {}".format(num_subjective))
+    print("Percentage of positive responses for all textual questions: {}%".format((num_positive/num_textual_questions)*100))
+    print("Percentage of negative responses for all textual questions: {}%".format((num_negative/num_textual_questions)*100))
+    print("Percentage of objective responses for all textual questions: {}%".format((num_objective/num_textual_questions)*100))
+    print("Percentage of subjective responses for all textual questions: {}%".format((num_subjective/num_textual_questions)*100))
+    # pie chart
+    labels = 'Subjective', 'Objective'
+    sizes = [(num_subjective/num_textual_questions)*360, (num_objective/num_textual_questions)*360]
+    colors = ['gold', 'yellowgreen']
+    explode = (0, 0.1)
+    polarity_chart = plt.figure()
+    plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
+    plt.axis('equal')
+    plt.title("Subjectivity Chart for All Textual Questions")
+    plt.savefig("subjectivity_chart") # saves the figure as a file
+
+    labels = 'Positive', 'Negative'
+    sizes = [(num_positive/num_textual_questions)*360, (num_negative/num_textual_questions)*360]
+    colors = ['gold', 'yellowgreen']
+    explode = (0, 0.1)
+    polarity_chart = plt.figure()
+    plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
+    plt.title('Polarity Chart for All Textual Questions')
+    plt.axis('equal')
+    plt.savefig("polarity_chart") # saves the figure as a file
             
 def parse():
 
