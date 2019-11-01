@@ -61,3 +61,10 @@ body {
 .dropdown:hover .dropdown-content {
   display: block;
 }
+.header {
+height: 100px;
+background-image: url("se.jpg");
+background-repeat: no-repeat;
+background-size: contain;
+background-position: center center;
+}
