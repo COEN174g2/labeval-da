@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="data_analytics.css">
 </head>
-<body>
+<body onload="create_entry()">
 <div id = "header">
 </div>
 <div class="navbar">
@@ -14,15 +14,7 @@
     <button class="dropbtn">Questions 
       <i class="fa fa-caret-down"></i>
     </button>
-    <div class="dropdown-content">
-      <a onclick="loadInfo(1)"href="#">Question 1</a>
-      <a onclick="loadInfo(2)"href="#">Question 2</a>
-      <a onclick="loadInfo(3)"href="#">Question 3</a>
-      <a onclick="loadInfo(4)"href="#">Question 4</a>
-      <a onclick="loadInfo(5)"href="#">Question 5</a>
-      <a onclick="loadInfo(6)"href="#">Question 6</a>
-      <a onclick="loadInfo(7)"href="#">Question 7</a>
-      <a onclick="loadInfo(8)"href="#">Text Response</a>
+    <div class="dropdown-content" id="ddm">
     </div>
   </div> 
 </div>

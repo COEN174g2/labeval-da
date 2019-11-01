@@ -3,5 +3,16 @@ function loadInfo(number){
 	img.src="histogram_question_" + number + ".png";
 	document.body.appendChild(img);
 	var text = document.getElementById("data");
-	text.innerHTML = "the mode is"
+	text.innerHTML = "the mode is";
+}
+
+function create_entry(){
+	console.log("create_entry function is called")
+	var i;
+	for (i = 0; i < 9; i++) {
+		var drop_down_entry = document.createElement("a");
+		drop_down_entry.innerHTML = "Question " + (i+1);
+		document.getElementById("ddm").appendChild(drop_down_entry);
+	}
+
 }
