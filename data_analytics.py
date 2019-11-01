@@ -22,7 +22,7 @@ def create_histogram(question_num, distribution_list):
 
     y = np.asarray(answer_list)
     hist, bin_edges = np.histogram(y, num_bins, range=(lower_bound, upper_bound))
-    width = (bin_edges[1] - bin_edges[0])
+    width = bin_edges[1] - bin_edges[0]
     fig = plt.figure()
     plt.bar(bin_edges[:-1], hist, align='center', width=width*0.6, edgecolor='k', facecolor='blue', alpha=0.5)
     plt.xticks(range(num_bins+1))
@@ -67,20 +67,35 @@ def calc_mode(distribution_list):
     most = max(list(map(list_of_responses.count, list_of_responses)))
     return list(set(filter(lambda val: list_of_responses.count(val) == most, list_of_responses)))
 
+def write_csv():
+
+    with open("analytics.csv", mode = "w", newline = '') as out_file:
+        file_writer = csv.writer(out_file, delimiter = ",", quotechar = '"', quoting = csv.QUOTE_MINIMAL)
+        file_writer.writerow(["NUMERIC-TYPE QUESTION:"])
+        file_writer.writerow(["question_number","most_popular_choice","mean","mode","median","standard_deviation"])
+        file_writer.writerow(["TEXTUAL-TYPE QUESTION:"])
+        file_writer.writerow(["percentage_positive", "percentage_negative", "percentage_subjective", "percentage_objective"])
+        for row_number, row_content in analytics_dict.items():
+            file_writer.writerow(row_content)
+
 def numerical_metrics(): 
 
-    for key, distribution_list in question_dict.items():
+    for key, distribution_list in numeric_question_dict.items():
         num_students_most_popular_choice = max(distribution_list)
         most_popular_choice = distribution_list.index(num_students_most_popular_choice) + 1 # the first answer choice starts at 1
-        print("For question {}:".format(key))
-        print("- Number of students choosing each numeric choice: {}".format(distribution_list))
-        print("- Most chosen numeric choice is {}".format(most_popular_choice))
-        print("- Mean value of numeric response is {}".format(calc_mean(distribution_list)))
-        print("- Mode value(s) of numeric response is/are {}".format(calc_mode(distribution_list)))
-        print("- Median value of numeric response is {}".format(calc_median(distribution_list)))
-        print("- Standard deviation of numeric response is {}".format(calc_standard_deviation(distribution_list)))
+        print("For question {}:".format(key)) # included in csv file
+        print("- Number of students choosing each numeric choice: {}".format(distribution_list)) 
+        print("- Most chosen numeric choice is {}".format(most_popular_choice)) # included in csv file
+        print("- Mean value of numeric response is {}".format(calc_mean(distribution_list))) # included in csv file
+        print("- Mode value(s) of numeric response is/are {}".format(calc_mode(distribution_list))) # included in csv file
+        print("- Median value of numeric response is {}".format(calc_median(distribution_list))) # included in csv file
+        print("- Standard deviation of numeric response is {}".format(calc_standard_deviation(distribution_list))) # included in csv file
         print("------------------------------")
         create_histogram(key, distribution_list)
+
+        analytics_dict[key] = []
+        new_row = [key, most_popular_choice, calc_mean(distribution_list), calc_mode(distribution_list), calc_median(distribution_list), calc_standard_deviation(distribution_list)]
+        analytics_dict[key].extend(new_row)
 
 def sentiment_analysis():
 
@@ -88,63 +103,84 @@ def sentiment_analysis():
     num_negative = 0
     num_objective = 0
     num_subjective = 0
+    num_neutral = 0
 
-    num_textual_questions = 0
+    num_aggregate_responses = 0
 
     for key, response_list in student_dict.items():
         print("Performing sentiment analysis on textual responses from student {}".format(key))
         for index, response in enumerate(response_list):
             if not response.isnumeric(): # only perform sentiment analysis on non-numeric responses
+
+                analytics_dict[index+1] = []
                 obj = TextBlob(response)
-                polarity = obj.sentiment.polarity # a value within the range [-1.0,1.0]
-                subjectivity = obj.sentiment.subjectivity # a value between [0.0,1.0]
+                polarity = round(obj.sentiment.polarity,1) # a value within the range [-1.0,1.0]
+                subjectivity = round(obj.sentiment.subjectivity,1) # a value between [0.0,1.0]
                 status = []
-                num_textual_questions+=1
+                num_aggregate_responses+=1
 
-                if polarity == 0:
+                if polarity == 0 or subjectivity == 0.5:
                     status.append("Neutral")
-                elif polarity > 0:
-                    status.append('Positive')
-                    num_positive+=1
+                    overall_sentiment = "Neutral"
+                    num_neutral+=1
+                    print("Question {}: {} response".format(index+1, overall_sentiment))
+                    textual_question_dict[index+1].append([status[0]])     
                 else:
-                    status.append('Negative')
-                    num_negative+=1
 
-                if subjectivity < 0.5:
-                    status.append("objective")
-                    num_objective+=1
-                elif subjectivity > 0.5:
-                    status.append("Subjective")
-                    num_subjective+=1
+                    if polarity > 0:
+                        status.append('Positive')
+                        num_positive+=1
+                    elif polarity < 0:
+                        status.append('Negative')
+                        num_negative+=1
 
-                if len(status) == 0:
-                    print("Question {}: {} and {} response".format(index+1, status[0], status[1]))
-                else:
-                    print("Question {}: {} response".format(index+1, status[0]))                
+                    if subjectivity < 0.5:
+                        status.append("Objective")
+                        num_objective+=1
+                    elif subjectivity > 0.5:
+                        status.append("Subjective")
+                        num_subjective+=1
+
+                    overall_sentiment = "{} and {}".format(status[0], status[1])
+                    print("Question {}: {} response".format(index+1, overall_sentiment))   
+                    textual_question_dict[index+1].append([status[0],status[1]])      
 
         print("------------------------------")
-    print("Percentage of positive responses for all textual questions: {}%".format((num_positive/num_textual_questions)*100))
-    print("Percentage of negative responses for all textual questions: {}%".format((num_negative/num_textual_questions)*100))
-    print("Percentage of objective responses for all textual questions: {}%".format((num_objective/num_textual_questions)*100))
-    print("Percentage of subjective responses for all textual questions: {}%".format((num_subjective/num_textual_questions)*100))
+
+    for question_id, response_sentiment_list in textual_question_dict.items():
+        analytics_dict[question_id] = []
+        flattened_list = [item for sublist in response_sentiment_list for item in sublist]
+        percentage_positive = (flattened_list.count("Positive")/len(response_sentiment_list))*100
+        percentage_negative = (flattened_list.count("Negative")/len(response_sentiment_list))*100
+        percentage_objective = (flattened_list.count("Objective")/len(response_sentiment_list))*100
+        percentage_subjective = (flattened_list.count("Subjective")/len(response_sentiment_list))*100
+        percentage_neutral = (flattened_list.count("Neutral")/len(response_sentiment_list))*100
+        new_row = [question_id, percentage_positive, percentage_negative, percentage_subjective, percentage_objective, percentage_neutral]
+        analytics_dict[question_id].extend(new_row)
+
+    print("Percentage of positive responses out of responses among all students: {}%".format((num_positive/num_aggregate_responses)*100))
+    print("Percentage of negative responses out of responses among all students: {}%".format((num_negative/num_aggregate_responses)*100))
+    print("Percentage of objective responses out of responses among all students: {}%".format((num_objective/num_aggregate_responses)*100))
+    print("Percentage of subjective responses out of responses among all students: {}%".format((num_subjective/num_aggregate_responses)*100))
+    print("Percentage of neutral responses out of responses among all students: {}%".format((num_neutral/num_aggregate_responses)*100))
     # pie chart
     labels = 'Subjective', 'Objective'
-    sizes = [(num_subjective/num_textual_questions)*360, (num_objective/num_textual_questions)*360]
+    sizes = [(num_subjective/num_aggregate_responses)*360, (num_objective/num_aggregate_responses)*360]
     colors = ['gold', 'yellowgreen']
     explode = (0, 0.1)
     polarity_chart = plt.figure()
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
     plt.axis('equal')
-    plt.title("Subjectivity Chart for All Textual Questions")
+    plt.title("Subjectivity Chart for All Student Responses")
     plt.savefig("subjectivity_chart") # saves the figure as a file
 
     labels = 'Positive', 'Negative'
-    sizes = [(num_positive/num_textual_questions)*360, (num_negative/num_textual_questions)*360]
+    sizes = [(num_positive/num_aggregate_responses)*360, (num_negative/num_aggregate_responses)*360]
     colors = ['gold', 'yellowgreen']
     explode = (0, 0.1)
     polarity_chart = plt.figure()
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
-    plt.title('Polarity Chart for All Textual Questions')
+    plt.title('Polarity Chart for All Student Responses')
     plt.axis('equal')
     plt.savefig("polarity_chart") # saves the figure as a file
             
@@ -163,7 +199,7 @@ def parse():
                 student_dict[student_count] = [] # create an empty list to hold the student's responses
             if row[1] != '':
                 student_dict[student_count].append(row[1])
-                question_dict[int(row[0])] = [0]*num_choices
+                numeric_question_dict[int(row[0])] = [0]*num_choices
             else:
                 student_dict[student_count].append(row[2])
             line_count+=1
@@ -171,7 +207,10 @@ def parse():
         for key, response_list in student_dict.items(): # tally the responses for each numeric question
             for index, response in enumerate(response_list):
                 if response.isnumeric():
-                    question_dict[index+1][int(response)-1]+=1
+                    numeric_question_dict[index+1][int(response)-1]+=1
+                else:
+                    textual_question_dict[index+1] = []
+
 
 def main():
 
@@ -184,9 +223,13 @@ def main():
     print("------------------------------")
     numerical_metrics()
     sentiment_analysis()
+    write_csv()
 
-question_dict = {}
+analytics_dict = {} # processed results in the form of a dictionary for output to csv
+numeric_question_dict = {} # containing responses for each numeric question
+textual_question_dict = {} # containing question ID used as dummy holder for each textual question
 student_dict = {} # dictionary containing lists of student responses
+
 num_questions = 9
 num_choices = 5
 student_count = 0
