@@ -28,7 +28,7 @@ def create_histogram(question_num, distribution_list):
     plt.xticks(range(num_bins+1))
     plt.yticks(range(max(distribution_list)+1))
     plt.xlim([lower_bound-width/2, upper_bound-width/2])
-    plt.title("Histogram for Question {}".format(question_num))
+    plt.title("Question {}".format(question_num))
     plt.xlabel("Choice")
     plt.ylabel("Number of Students Choosing")
     plt.savefig("histogram_question_{}".format(question_num)) # saves the figure as a file
@@ -74,7 +74,7 @@ def write_csv():
         file_writer.writerow(["NUMERIC-TYPE QUESTION:"])
         file_writer.writerow(["question_number","most_popular_choice","mean","mode","median","standard_deviation"])
         file_writer.writerow(["TEXTUAL-TYPE QUESTION:"])
-        file_writer.writerow(["percentage_positive", "percentage_negative", "percentage_subjective", "percentage_objective"])
+        file_writer.writerow(["percentage_positive_all_students", "percentage_negative_all_students", "percentage_subjective_all_students", "percentage_objective_all_students"])
         for row_number, row_content in analytics_dict.items():
             file_writer.writerow(row_content)
 
@@ -157,18 +157,40 @@ def sentiment_analysis():
         percentage_neutral = (flattened_list.count("Neutral")/len(response_sentiment_list))*100
         new_row = [question_id, percentage_positive, percentage_negative, percentage_subjective, percentage_objective, percentage_neutral]
         analytics_dict[question_id].extend(new_row)
+        
+        # pie charts
+        labels = 'Subjective', 'Objective'
+        sizes = [(flattened_list.count("Subjective")/len(response_sentiment_list))*360, (flattened_list.count("Objective")/len(response_sentiment_list))*360]
+        colors = ['gold', 'yellowgreen']
+        explode = (0, 0.1)
+        subjectivity_chart_per_question = plt.figure()
+        plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
+        plt.axis('equal')
+        plt.title("Question {}: Subjectivity Chart for Student Responses".format(question_id))
+        plt.savefig("subjectivity_chart_question_{}".format(question_id)) # saves the figure as a file
+
+        labels = 'Positive', 'Negative'
+        sizes = [(flattened_list.count("Positive")/len(response_sentiment_list))*360, (flattened_list.count("Negative")/len(response_sentiment_list))*360]
+        colors = ['gold', 'yellowgreen']
+        explode = (0, 0.1)
+        polarity_chart_per_question = plt.figure()
+        plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
+        plt.title("Question {}: Polarity Chart for Student Responses".format(question_id))
+        plt.axis('equal')
+        plt.savefig("polarity_chart_question_{}".format(question_id)) # saves the figure as a file
 
     print("Percentage of positive responses out of textual responses among all students: {}%".format((num_positive/num_aggregate_responses)*100))
     print("Percentage of negative responses out of textual responses among all students: {}%".format((num_negative/num_aggregate_responses)*100))
     print("Percentage of objective responses out of textual responses among all students: {}%".format((num_objective/num_aggregate_responses)*100))
     print("Percentage of subjective responses out of textual responses among all students: {}%".format((num_subjective/num_aggregate_responses)*100))
     print("Percentage of neutral responses out of textual responses among all students: {}%".format((num_neutral/num_aggregate_responses)*100))
-    # pie chart
+    
+    # pie charts
     labels = 'Subjective', 'Objective'
     sizes = [(num_subjective/num_aggregate_responses)*360, (num_objective/num_aggregate_responses)*360]
     colors = ['gold', 'yellowgreen']
     explode = (0, 0.1)
-    polarity_chart = plt.figure()
+    subjectivity_chart = plt.figure()
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
     plt.axis('equal')
     plt.title("Subjectivity Chart for All Student Textual Responses")

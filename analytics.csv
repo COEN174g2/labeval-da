@@ -1,7 +1,7 @@
 NUMERIC-TYPE QUESTION:
 question_number,most_popular_choice,mean,mode,median,standard_deviation
 TEXTUAL-TYPE QUESTION:
-percentage_positive,percentage_negative,percentage_subjective,percentage_objective
+percentage_positive_all_students,percentage_negative_all_students,percentage_subjective_all_students,percentage_objective_all_students
 1,5,3.2,[5],3,1.8
 2,4,3.4,[4],4,1.5
 3,3,2.8,[3],3,1.5
