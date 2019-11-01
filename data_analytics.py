@@ -158,11 +158,11 @@ def sentiment_analysis():
         new_row = [question_id, percentage_positive, percentage_negative, percentage_subjective, percentage_objective, percentage_neutral]
         analytics_dict[question_id].extend(new_row)
 
-    print("Percentage of positive responses out of responses among all students: {}%".format((num_positive/num_aggregate_responses)*100))
-    print("Percentage of negative responses out of responses among all students: {}%".format((num_negative/num_aggregate_responses)*100))
-    print("Percentage of objective responses out of responses among all students: {}%".format((num_objective/num_aggregate_responses)*100))
-    print("Percentage of subjective responses out of responses among all students: {}%".format((num_subjective/num_aggregate_responses)*100))
-    print("Percentage of neutral responses out of responses among all students: {}%".format((num_neutral/num_aggregate_responses)*100))
+    print("Percentage of positive responses out of textual responses among all students: {}%".format((num_positive/num_aggregate_responses)*100))
+    print("Percentage of negative responses out of textual responses among all students: {}%".format((num_negative/num_aggregate_responses)*100))
+    print("Percentage of objective responses out of textual responses among all students: {}%".format((num_objective/num_aggregate_responses)*100))
+    print("Percentage of subjective responses out of textual responses among all students: {}%".format((num_subjective/num_aggregate_responses)*100))
+    print("Percentage of neutral responses out of textual responses among all students: {}%".format((num_neutral/num_aggregate_responses)*100))
     # pie chart
     labels = 'Subjective', 'Objective'
     sizes = [(num_subjective/num_aggregate_responses)*360, (num_objective/num_aggregate_responses)*360]
@@ -171,7 +171,7 @@ def sentiment_analysis():
     polarity_chart = plt.figure()
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
     plt.axis('equal')
-    plt.title("Subjectivity Chart for All Student Responses")
+    plt.title("Subjectivity Chart for All Student Textual Responses")
     plt.savefig("subjectivity_chart") # saves the figure as a file
 
     labels = 'Positive', 'Negative'
@@ -180,7 +180,7 @@ def sentiment_analysis():
     explode = (0, 0.1)
     polarity_chart = plt.figure()
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
-    plt.title('Polarity Chart for All Student Responses')
+    plt.title('Polarity Chart for All Student Textual Responses')
     plt.axis('equal')
     plt.savefig("polarity_chart") # saves the figure as a file
             
