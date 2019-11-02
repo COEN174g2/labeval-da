@@ -1,5 +1,5 @@
 '''
-This file contains code for the data analytics module. To run: python data_analytics.py questions.csv answers.csv
+This file contains code for the data analytics module. To run: python data_analytics.py [questions.csv] [answers.csv] [output_path - optional]
 '''
 
 from textblob import TextBlob
@@ -31,7 +31,7 @@ def create_histogram(question_num, distribution_list):
     plt.title("Question {}".format(question_num))
     plt.xlabel("Choice")
     plt.ylabel("Number of Students Choosing")
-    plt.savefig("histogram_question_{}".format(question_num)) # saves the figure as a file
+    plt.savefig(output_path + "histogram_question_{}".format(question_num)) # saves the figure as a file
     
 def calc_mean(distribution_list):
 
@@ -71,10 +71,10 @@ def write_csv():
 
     with open("analytics.csv", mode = "w", newline = '') as out_file:
         file_writer = csv.writer(out_file, delimiter = ",", quotechar = '"', quoting = csv.QUOTE_MINIMAL)
-        file_writer.writerow(["NUMERIC-TYPE QUESTION:"])
-        file_writer.writerow(["question_number","most_popular_choice","mean","mode","median","standard_deviation"])
-        file_writer.writerow(["TEXTUAL-TYPE QUESTION:"])
-        file_writer.writerow(["percentage_positive_all_students", "percentage_negative_all_students", "percentage_subjective_all_students", "percentage_objective_all_students"])
+        file_writer.writerow(["MULTIPLE_CHOICE QUESTION:"])
+        file_writer.writerow(["is_multiple_choice","question_number","most_popular_choice","mean","mode","median","standard_deviation"])
+        file_writer.writerow(["OPEN_ENDED QUESTION:"])
+        file_writer.writerow(["is_open_ended","question_number","percentage_positive_all_students", "percentage_negative_all_students", "percentage_subjective_all_students", "percentage_objective_all_students"])
         for row_number, row_content in analytics_dict.items():
             file_writer.writerow(row_content)
 
@@ -94,7 +94,7 @@ def numerical_metrics():
         create_histogram(key, distribution_list)
 
         analytics_dict[key] = []
-        new_row = [key, most_popular_choice, calc_mean(distribution_list), calc_mode(distribution_list), calc_median(distribution_list), calc_standard_deviation(distribution_list)]
+        new_row = ["multiple_choice",key, most_popular_choice, calc_mean(distribution_list), calc_mode(distribution_list), calc_median(distribution_list), calc_standard_deviation(distribution_list)]
         analytics_dict[key].extend(new_row)
 
 def sentiment_analysis():
@@ -155,7 +155,7 @@ def sentiment_analysis():
         percentage_objective = (flattened_list.count("Objective")/len(response_sentiment_list))*100
         percentage_subjective = (flattened_list.count("Subjective")/len(response_sentiment_list))*100
         percentage_neutral = (flattened_list.count("Neutral")/len(response_sentiment_list))*100
-        new_row = [question_id, percentage_positive, percentage_negative, percentage_subjective, percentage_objective, percentage_neutral]
+        new_row = ["open_ended",question_id, percentage_positive, percentage_negative, percentage_subjective, percentage_objective, percentage_neutral]
         analytics_dict[question_id].extend(new_row)
         
         # pie charts
@@ -167,7 +167,7 @@ def sentiment_analysis():
         plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
         plt.axis('equal')
         plt.title("Question {}: Subjectivity Chart for Student Responses".format(question_id))
-        plt.savefig("subjectivity_chart_question_{}".format(question_id)) # saves the figure as a file
+        plt.savefig(output_path + "subjectivity_chart_question_{}".format(question_id)) # saves the figure as a file
 
         labels = 'Positive', 'Negative'
         sizes = [(flattened_list.count("Positive")/len(response_sentiment_list))*360, (flattened_list.count("Negative")/len(response_sentiment_list))*360]
@@ -177,7 +177,7 @@ def sentiment_analysis():
         plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
         plt.title("Question {}: Polarity Chart for Student Responses".format(question_id))
         plt.axis('equal')
-        plt.savefig("polarity_chart_question_{}".format(question_id)) # saves the figure as a file
+        plt.savefig(output_path + "polarity_chart_question_{}".format(question_id)) # saves the figure as a file
 
     print("Percentage of positive responses out of textual responses among all students: {}%".format((num_positive/num_aggregate_responses)*100))
     print("Percentage of negative responses out of textual responses among all students: {}%".format((num_negative/num_aggregate_responses)*100))
@@ -194,7 +194,7 @@ def sentiment_analysis():
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
     plt.axis('equal')
     plt.title("Subjectivity Chart for All Student Textual Responses")
-    plt.savefig("subjectivity_chart") # saves the figure as a file
+    plt.savefig(output_path + "subjectivity_chart") # saves the figure as a file
 
     labels = 'Positive', 'Negative'
     sizes = [(num_positive/num_aggregate_responses)*360, (num_negative/num_aggregate_responses)*360]
@@ -204,7 +204,7 @@ def sentiment_analysis():
     plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
     plt.title('Polarity Chart for All Student Textual Responses')
     plt.axis('equal')
-    plt.savefig("polarity_chart") # saves the figure as a file
+    plt.savefig(output_path + "polarity_chart") # saves the figure as a file
             
 def parse():
 
@@ -255,8 +255,14 @@ student_dict = {} # dictionary containing lists of student responses
 num_questions = 9
 num_choices = 5
 student_count = 0
+output_path = ""
+
 questions_file = sys.argv[1]
 answers_file = sys.argv[2]
+if len(sys.argv) > 3:
+    output_path = sys.argv[3]
+
+#hard coded values indicating if this is text or numeric
 
 if __name__ == '__main__':
     main()
