@@ -6,6 +6,7 @@ from textblob import TextBlob
 import matplotlib.pyplot as plt
 import numpy as np
 import statistics
+import socket
 import csv 
 import sys
 import math
@@ -233,6 +234,33 @@ def parse():
                 else:
                     textual_question_dict[index+1] = []
 
+def tcp_server():
+    port = 60000                    # Reserve a port for your service.
+    s = socket.socket()             # Create a socket object
+    host = socket.gethostname()     # Get local machine name
+    s.bind((host, port))            # Bind to the port
+    s.listen(5)                     # Now wait for client connection.
+
+    print('Server listening....')
+
+    while True:
+        conn, addr = s.accept()     # Establish connection with client.
+        print("Got connection from {}".format(addr))
+        data = conn.recv(1024)
+        print('Server received', repr(data))
+
+        filename = "data_analytics.html"
+        f = open(filename,'rb')
+        l = f.read(1024)
+        while (l):
+           conn.send(l)
+           print("Sent {}".format(repr(l)))
+           l = f.read(1024)
+        f.close()
+
+        print("Done sending")
+        conn.close()
+
 
 def main():
 
@@ -246,6 +274,7 @@ def main():
     numerical_metrics()
     sentiment_analysis()
     write_csv()
+    tcp_server()
 
 analytics_dict = {} # processed results in the form of a dictionary for output to csv
 numeric_question_dict = {} # containing responses for each numeric question
