@@ -1,5 +1,6 @@
 '''
 This file contains code for the data analytics module. To run: python data_analytics.py [questions.csv] [answers.csv] [output_path - optional]
+After the numbers are tabulated, a TCP server (this file) will transfer the data_analytics.html file to a client. 
 '''
 
 from textblob import TextBlob
