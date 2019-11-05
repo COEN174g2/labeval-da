@@ -1,11 +1,21 @@
-questions
-id,description,is_open,created_at,updated_at
-1,The labs helped me understand the lecture material,FALSE,,
-2,The labs taught me new skills.,FALSE,,
-3,The labs taught me to think creatively.,FALSE,,
-4,I would be able to repeat the labs without help.,FALSE,,
-5,The lab instructor was supportive,FALSE,,
-6,The lab instructor was able to answer my questions.,FALSE,,
-7,The lab instructor was approachable.,FALSE,,
-8,What’s your favorite aspect of the lab? ,TRUE,,
-9,What about the lab would you like to see improved?,TRUE,,
+id,description,questionnaire_id,created_at,updated_at,q_type
+1,The labs helped me understand the lecture material.,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+2,The labs taught me new skills.,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+3,The labs taught me to think creatively.,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+4,I would be able to repeat the labs without help.,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+5,What was your favorite aspect of the lab?,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,3
+6,What about the lab would you like to see improved?,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,3
+7,The lab instructor was supportive.,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+8,The lab instructor was approachable.,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+9,The lab instructor was able to answer my questions.,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+10,The lab instructor helped me reach a clear understanding of key concepts.,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+11,The lab instructor fostered a mutually respectful learning environment.,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+12,"What, if anything, could the lab instructor do to improve the experience?",1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,3
+13,The amount of lab equipment was sufficient.,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+14,The available space was sufficient for the lab activities.,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+15,"If lab equipment or setups were not functioning properly, adequate support was available to rectify the situation.",1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,1
+16,"What, if anything, could improve lab space and equipment?",1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,3
+17,"On average, the approximate number of hours completing a lab was",1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,2
+18,How many hours did you spend preparing for the lab? ,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,2
+19,How many hours did you spend writing lab reports outside the designated lab period?,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,2
+20,What feedback would you give the lecture section instructor (not the lab TA) about the labs?,1,2019-11-05 00:26:32 UTC,2019-11-05 00:26:32 UTC,3

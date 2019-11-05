@@ -1,5 +1,5 @@
 '''
-This file contains code for the data analytics module. To run: python data_analytics.py [questions.csv] [answers.csv] [output_path - optional]
+This file contains code for the data analytics module. To run: python data_analytics.py [questions.csv] [answers.csv] [output_path_for_csv_file - optional]
 After the numbers are tabulated, a TCP server (this file) will transfer the data_analytics.html file to a client. 
 '''
 
@@ -11,6 +11,8 @@ import socket
 import csv 
 import sys
 import math
+
+plt.rcParams.update({'figure.max_open_warning': 0})
 
 def create_histogram(question_num, distribution_list):
 
@@ -71,12 +73,12 @@ def calc_mode(distribution_list):
 
 def write_csv():
 
-    with open("analytics.csv", mode = "w", newline = '') as out_file:
+    with open(output_path + "analytics.csv", mode = "w", newline = '') as out_file:
         file_writer = csv.writer(out_file, delimiter = ",", quotechar = '"', quoting = csv.QUOTE_MINIMAL)
         file_writer.writerow(["MULTIPLE_CHOICE QUESTION:"])
         file_writer.writerow(["is_multiple_choice","question_number","most_popular_choice","mean","mode","median","standard_deviation"])
         file_writer.writerow(["OPEN_ENDED QUESTION:"])
-        file_writer.writerow(["is_open_ended","question_number","percentage_positive_all_students", "percentage_negative_all_students", "percentage_subjective_all_students", "percentage_objective_all_students"])
+        file_writer.writerow(["is_open_ended","question_number","percentage_positive_all_students", "percentage_negative_all_students", "percentage_subjective_all_students", "percentage_objective_all_students", "percentage_neutral_all_students"])
         for row_number, row_content in analytics_dict.items():
             file_writer.writerow(row_content)
 
@@ -181,11 +183,11 @@ def sentiment_analysis():
         plt.axis('equal')
         plt.savefig(output_path + "polarity_chart_question_{}".format(question_id)) # saves the figure as a file
 
-    print("Percentage of positive responses out of textual responses among all students: {}%".format((num_positive/num_aggregate_responses)*100))
-    print("Percentage of negative responses out of textual responses among all students: {}%".format((num_negative/num_aggregate_responses)*100))
-    print("Percentage of objective responses out of textual responses among all students: {}%".format((num_objective/num_aggregate_responses)*100))
-    print("Percentage of subjective responses out of textual responses among all students: {}%".format((num_subjective/num_aggregate_responses)*100))
-    print("Percentage of neutral responses out of textual responses among all students: {}%".format((num_neutral/num_aggregate_responses)*100))
+    print("Percentage of positive responses out of textual responses among all students: {:.1f}%".format((num_positive/num_aggregate_responses)*100))
+    print("Percentage of negative responses out of textual responses among all students: {:.1f}%".format((num_negative/num_aggregate_responses)*100))
+    print("Percentage of objective responses out of textual responses among all students: {:.1f}%".format((num_objective/num_aggregate_responses)*100))
+    print("Percentage of subjective responses out of textual responses among all students: {:.1f}%".format((num_subjective/num_aggregate_responses)*100))
+    print("Percentage of neutral responses out of textual responses among all students: {:.1f}%".format((num_neutral/num_aggregate_responses)*100))
     
     # pie charts
     labels = 'Subjective', 'Objective'
@@ -211,9 +213,16 @@ def sentiment_analysis():
 def parse():
 
     global student_count
-    with open(answers_file) as csv_file:
+
+    with open(questions_file) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter = ',', quotechar ='"', quoting = csv.QUOTE_ALL)
         next(csv_reader) # skip a row
+        line_count = 0
+        for index, row in enumerate(csv_reader):
+            question_type_dict[index+1] = int(row[len(row)-1])
+
+    with open(answers_file) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter = ',', quotechar ='"', quoting = csv.QUOTE_ALL)
         next(csv_reader) # skip a row
         line_count = 0
 
@@ -221,21 +230,22 @@ def parse():
             if line_count % num_questions == 0:
                 student_count+=1
                 student_dict[student_count] = [] # create an empty list to hold the student's responses
-            if row[1] != '':
+            if question_type_dict[int(row[4])] == 1 or question_type_dict[int(row[4])] == 2:
                 student_dict[student_count].append(row[1])
-                numeric_question_dict[int(row[0])] = [0]*num_choices
-            else:
+                numeric_question_dict[int(row[4])] = [0]*num_choices
+            elif question_type_dict[int(row[4])] == 3: # open-ended question
                 student_dict[student_count].append(row[2])
             line_count+=1
 
         for key, response_list in student_dict.items(): # tally the responses for each numeric question
             for index, response in enumerate(response_list):
-                if response.isnumeric():
+                if question_type_dict[index+1] == 1 or question_type_dict[index+1] == 2:
                     numeric_question_dict[index+1][int(response)-1]+=1
-                else:
+                elif question_type_dict[index+1] == 3:
                     textual_question_dict[index+1] = []
 
 def tcp_server():
+
     port = 60000                    # Reserve a port for your service.
     s = socket.socket()             # Create a socket object
     host = socket.gethostname()     # Get local machine name
@@ -250,23 +260,47 @@ def tcp_server():
         data = conn.recv(1024)
         print('Server received', repr(data))
 
-        filename = "data_analytics.html"
-        f = open(filename,'rb')
-        l = f.read(1024)
+        html_file_name = "data_analytics.html"
+        html_file = open(html_file_name,"rb")
+        l = html_file.read(1024)
+
         while (l):
            conn.send(l)
            print("Sent {}".format(repr(l)))
-           l = f.read(1024)
-        f.close()
+           l = html_file.read(1024)
+
+        css_file_name = "data_analytics.css"
+        css_file = open(css_file_name,"rb")
+        l = css_file.read(1024)
+
+        while (l):
+           conn.send(l)
+           print("Sent {}".format(repr(l)))
+           l = css_file.read(1024)
+
+        js_file_name = "data_analytics.js"
+        js_file = open(js_file_name,"rb")
+        l = js_file.read(1024)
+
+        while (l):
+           conn.send(l)
+           print("Sent {}".format(repr(l)))
+           l = js_file.read(1024)
+
+        html_file.close()
+        css_file.close()
+        js_file.close()
+
 
         print("Done sending")
         conn.close()
 
-
 def main():
 
     parse()
-    print("Student dict content is: \n {}".format(student_dict))
+    print("Number of multiple choice questions: \n {}".format(list(question_type_dict.values()).count(1) + list(question_type_dict.values()).count(2))) # count number of multiple-choice questions
+    print("------------------------------")
+    print("Number of open-ended questions: \n {}".format(list(question_type_dict.values()).count(3))) # count number of open-ended questions
     print("------------------------------")
     print("Student count is {}".format(student_count))
     print("------------------------------")
@@ -275,14 +309,15 @@ def main():
     numerical_metrics()
     sentiment_analysis()
     write_csv()
-    tcp_server()
+    #tcp_server()
 
+question_type_dict = {} 
 analytics_dict = {} # processed results in the form of a dictionary for output to csv
 numeric_question_dict = {} # containing responses for each numeric question
 textual_question_dict = {} # containing question ID used as dummy holder for each textual question
 student_dict = {} # dictionary containing lists of student responses
 
-num_questions = 9
+num_questions = 20
 num_choices = 5
 student_count = 0
 output_path = ""
