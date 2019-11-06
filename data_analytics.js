@@ -4,28 +4,35 @@ function loadInfo(number){
 	var img = document.getElementById("graph");
 	var img2 = document.getElementById("graph2");
 	var text = document.getElementById("data");
-	if (question_info[number-1][0] == "open_ended")
+	for (i = 0 ; i<question_info.length; i++)
 	{
-		console.log("inside the if statement");
-		img.src= "subjectivity_chart_question_" + number + ".png";
-		img2.src = "polarity_chart_question_" + number + ".png";
-		document.body.appendChild(img);
-		document.body.appendChild(img2);
-		text.innerHTML = "percentage positive response:"+ question_info[number-1][2] 
-						+"\npercentage negative response:"+ question_info[number-1][3] 
-						+"\npercentage subjective:"+ question_info[number-1][4] 
-						+"\npercentage objective:"+ question_info[number-1][5] 
-						+ "\npercentage netural:"+ question_info[number-1][6]; 
-		return;
+		if (question_info[i][1] == number)
+		{
+			if (question_info[i][0] == "open_ended")
+			{
+				console.log("inside the if statement");
+				img.src= "subjectivity_chart_question_" + number + ".png";
+				img2.src = "polarity_chart_question_" + number + ".png";
+				document.body.appendChild(img);
+				document.body.appendChild(img2);
+				text.innerHTML = "percentage positive response:"+ question_info[number-1][2] 
+								+"<br> <br> percentage negative response:"+ question_info[number-1][3] 
+								+"<br> <br> percentage subjective:"+ question_info[number-1][4] 
+								+"<br> <br> percentage objective:"+ question_info[number-1][5] 
+								+ "<br> <br> percentage netural:"+ question_info[number-1][6]; 
+				return;
+			}
+			img2.src = "";
+			img.src="histogram_question_" + number + ".png";
+			document.body.appendChild(img);
+			text.innerHTML = " the most popular choice:" + question_info[number-1][2] 
+							+"<br> <br> mean:"+ question_info[number-1][3]
+							+"<br> <br> mode:"+ question_info[number-1][4] 
+							+"<br> <br> median:"+question_info[number-1][5]
+							+"<br> <br> standard_deviation:"+question_info[number-1][6];
+		}
+
 	}
-	img2.src = "";
-	img.src="histogram_question_" + number + ".png";
-	document.body.appendChild(img);
-	text.innerHTML = " the most popular choice:" + question_info[number-1][2] 
-					+ "\nmean:"+ question_info[number-1][3]
-					+"\nmode:"+ question_info[number-1][4] 
-					+"\nmedian:"+question_info[number-1][5]
-					+"\nstandard_deviation:"+question_info[number-1][6];
 }
 var createClickHandler = function(arg) {
   return function() { loadInfo(arg); };
@@ -35,7 +42,7 @@ var createClickHandler = function(arg) {
 function create_entry(){
 	console.log("create_entry function is called")
 	var i;
-	for (i = 0; i < 9; i++) {
+	for (i = 0; i < 20; i++) {
 		var drop_down_entry = document.createElement("a");
 		drop_down_entry.onclick = createClickHandler(i+1)
 		drop_down_entry.innerHTML = "Question " + (i+1)
