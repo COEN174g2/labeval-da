@@ -15,21 +15,20 @@ function loadInfo(number){
 				img2.src = "polarity_chart_question_" + number + ".png";
 				document.body.appendChild(img);
 				document.body.appendChild(img2);
-				text.innerHTML = "percentage positive response:"+ question_info[number-1][2] 
-								+"<br> <br> percentage negative response:"+ question_info[number-1][3] 
-								+"<br> <br> percentage subjective:"+ question_info[number-1][4] 
-								+"<br> <br> percentage objective:"+ question_info[number-1][5] 
-								+ "<br> <br> percentage netural:"+ question_info[number-1][6]; 
+				text.innerHTML = "Percentage positive response: "+ question_info[i][2]+"%"
+								+"<br> <br> Percentage negative response: "+ question_info[i][3]+"%"
+								+"<br> <br> Percentage subjective: "+ question_info[i][4]+"%" 
+								+"<br> <br> Percentage objective: "+ question_info[i][5]+"%" 
+								+ "<br> <br> Percentage netural: "+ question_info[i][6]+"%"; 
 				return;
 			}
 			img2.src = "";
 			img.src="histogram_question_" + number + ".png";
 			document.body.appendChild(img);
-			text.innerHTML = " the most popular choice:" + question_info[number-1][2] 
-							+"<br> <br> mean:"+ question_info[number-1][3]
-							+"<br> <br> mode:"+ question_info[number-1][4] 
-							+"<br> <br> median:"+question_info[number-1][5]
-							+"<br> <br> standard_deviation:"+question_info[number-1][6];
+			text.innerHTML ="<br> <br> Mean: "+ question_info[i][3]
+							+"<br> <br> Mode: "+ question_info[i][4] 
+							+"<br> <br> Median: "+question_info[i][5]
+							+"<br> <br> Standard Deviation: "+question_info[i][6];
 		}
 
 	}
@@ -70,7 +69,7 @@ $.ajax({
     }
  });
 
-function parse_data(allText){
+/*function parse_data(allText){
 	var question_number = 1;
 	var allTextLines = allText.split(/\r\n|\n/);
 	console.log(allTextLines.length);
@@ -92,7 +91,7 @@ function parse_data(allText){
 	{
 		console.log(question_info[j]);
 	}
-}
+}*/
 
 function parse(allText){
 	var question_number=1;
