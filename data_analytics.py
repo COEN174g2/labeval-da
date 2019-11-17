@@ -71,6 +71,16 @@ def calc_mode(distribution_list):
     most = max(list(map(list_of_responses.count, list_of_responses)))
     return list(set(filter(lambda val: list_of_responses.count(val) == most, list_of_responses)))
 
+
+def convert_to_string(list):
+    string = ""
+    for i in range(len(list)):
+        string += str(list[i])
+        if i+1 != len(list):
+            string += ','
+    return string
+
+
 def write_csv():
 
     with open(output_path + "analytics.csv", mode = "w", newline = '') as out_file:
@@ -98,7 +108,7 @@ def numerical_metrics():
         create_histogram(key, distribution_list)
 
         analytics_dict[key] = []
-        new_row = ["multiple_choice",key, most_popular_choice, calc_mean(distribution_list), calc_mode(distribution_list), calc_median(distribution_list), calc_standard_deviation(distribution_list)]
+        new_row = ["multiple_choice",key, most_popular_choice, calc_mean(distribution_list), convert_to_string(calc_mode(distribution_list)), calc_median(distribution_list), calc_standard_deviation(distribution_list)]
         analytics_dict[key].extend(new_row)
 
 def sentiment_analysis():
@@ -154,11 +164,11 @@ def sentiment_analysis():
     for question_id, response_sentiment_list in textual_question_dict.items():
         analytics_dict[question_id] = []
         flattened_list = [item for sublist in response_sentiment_list for item in sublist]
-        percentage_positive = (flattened_list.count("Positive")/len(response_sentiment_list))*100
-        percentage_negative = (flattened_list.count("Negative")/len(response_sentiment_list))*100
-        percentage_objective = (flattened_list.count("Objective")/len(response_sentiment_list))*100
-        percentage_subjective = (flattened_list.count("Subjective")/len(response_sentiment_list))*100
-        percentage_neutral = (flattened_list.count("Neutral")/len(response_sentiment_list))*100
+        percentage_positive = round((flattened_list.count("Positive")/len(response_sentiment_list))*100, 1)
+        percentage_negative = round((flattened_list.count("Negative")/len(response_sentiment_list))*100, 1)
+        percentage_objective = round((flattened_list.count("Objective")/len(response_sentiment_list))*100, 1)
+        percentage_subjective = round((flattened_list.count("Subjective")/len(response_sentiment_list))*100, 1)
+        percentage_neutral = round((flattened_list.count("Neutral")/len(response_sentiment_list))*100, 1)
         new_row = ["open_ended",question_id, percentage_positive, percentage_negative, percentage_subjective, percentage_objective, percentage_neutral]
         analytics_dict[question_id].extend(new_row)
         

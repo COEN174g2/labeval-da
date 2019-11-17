@@ -2,23 +2,23 @@ MULTIPLE_CHOICE QUESTION:
 is_multiple_choice,question_number,most_popular_choice,mean,mode,median,standard_deviation
 OPEN_ENDED QUESTION:
 is_open_ended,question_number,percentage_positive_all_students,percentage_negative_all_students,percentage_subjective_all_students,percentage_objective_all_students,percentage_neutral_all_students
-multiple_choice,1,1,4.2,"[1, 3, 4]",3,1.5
-multiple_choice,2,1,3.8,"[1, 3]",3,1.5
-multiple_choice,3,1,4.2,"[1, 3, 4]",3,1.5
-multiple_choice,4,1,4.0,"[1, 4]",3,1.6
-multiple_choice,7,1,4.6,"[1, 4, 5]",4,1.7
-multiple_choice,8,1,4.2,"[1, 3, 4]",3,1.5
-multiple_choice,9,1,4.4,"[1, 3, 5]",3,1.7
-multiple_choice,10,1,4.4,"[1, 3, 5]",3,1.7
-multiple_choice,11,1,4.6,"[1, 4, 5]",4,1.7
-multiple_choice,13,5,4.8,[5],4,1.8
-multiple_choice,14,1,4.2,"[1, 5]",3,1.7
-multiple_choice,15,1,4.4,"[1, 3, 5]",3,1.7
-multiple_choice,17,3,3.0,[3],2,0.9
-multiple_choice,18,1,3.4,"[1, 2, 3]",2,1.4
-multiple_choice,19,3,3.6,[3],3,1.4
-open_ended,5,28.57142857142857,42.857142857142854,42.857142857142854,28.57142857142857,28.57142857142857
-open_ended,6,42.857142857142854,14.285714285714285,28.57142857142857,28.57142857142857,42.857142857142854
-open_ended,12,28.57142857142857,0.0,28.57142857142857,0.0,71.42857142857143
-open_ended,16,28.57142857142857,0.0,28.57142857142857,0.0,71.42857142857143
-open_ended,20,0.0,14.285714285714285,0.0,14.285714285714285,85.71428571428571
+multiple_choice,1,1,4.2,"1,3,4",3,1.5
+multiple_choice,2,1,3.8,"1,3",3,1.5
+multiple_choice,3,1,4.2,"1,3,4",3,1.5
+multiple_choice,4,1,4.0,"1,4",3,1.6
+multiple_choice,7,1,4.6,"1,4,5",4,1.7
+multiple_choice,8,1,4.2,"1,3,4",3,1.5
+multiple_choice,9,1,4.4,"1,3,5",3,1.7
+multiple_choice,10,1,4.4,"1,3,5",3,1.7
+multiple_choice,11,1,4.6,"1,4,5",4,1.7
+multiple_choice,13,5,4.8,5,4,1.8
+multiple_choice,14,1,4.2,"1,5",3,1.7
+multiple_choice,15,1,4.4,"1,3,5",3,1.7
+multiple_choice,17,3,3.0,3,2,0.9
+multiple_choice,18,1,3.4,"1,2,3",2,1.4
+multiple_choice,19,3,3.6,3,3,1.4
+open_ended,5,28.6,42.9,42.9,28.6,28.6
+open_ended,6,42.9,14.3,28.6,28.6,42.9
+open_ended,12,28.6,0.0,28.6,0.0,71.4
+open_ended,16,28.6,0.0,28.6,0.0,71.4
+open_ended,20,0.0,14.3,0.0,14.3,85.7
