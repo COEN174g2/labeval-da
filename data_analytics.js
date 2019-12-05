@@ -1,5 +1,7 @@
 var question_info = [];
 var question_title = [];
+
+// load info function loads the graphs and text to html
 function loadInfo(number){
 	var img = document.getElementById("graph");
 	var img2 = document.getElementById("graph2");
@@ -39,6 +41,7 @@ var createClickHandler = function(arg) {
   return function() { loadInfo(arg); };
 }
 
+//Creates the drop down menu entry dynamically
 
 function create_entry(){
 	console.log("create_entry function is called")
@@ -52,7 +55,7 @@ function create_entry(){
 
 }
 
-
+// load the text file with ajax
 $.ajaxPrefilter( 'text', function( options ) {
     options.crossDomain = true;
 });
@@ -84,6 +87,8 @@ $.ajax({
         alert(error);
     }
  });
+
+//parse the analytics csv file
 function parse_data(allText){
 	var allTextLines = Papa.parse(allText).data;
 	var i;
@@ -98,6 +103,7 @@ function parse_data(allText){
 	}
 }
 
+//parse the question.csv file
 function parse(allText){
 	var question_number=1;
 	var allTextLines = Papa.parse(allText).data;
