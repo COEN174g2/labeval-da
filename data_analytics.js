@@ -1,7 +1,17 @@
+/*
+Author: Xinyu Chen
+Description:This js functions takes care of the data parsing and dynamically load dropdown buttons for the html page
+*/
+
 var question_info = [];
 var question_title = [];
 
-// load info function loads the graphs and text to html
+/*
+Function name: loadInfo
+Input: Number (int type) that question number that users selected
+Output: N/A
+Description: This function takes care of load question and data analytics to the html page
+*/
 function loadInfo(number){
 	var img = document.getElementById("graph");
 	var img2 = document.getElementById("graph2");
@@ -37,6 +47,13 @@ function loadInfo(number){
 
 	}
 }
+
+/*
+Function name: createClickHandler
+Input: N/A
+Output: N/A
+Description: this function invokes the loadInfo function
+*/
 var createClickHandler = function(arg) {
   return function() { loadInfo(arg); };
 }
@@ -60,6 +77,9 @@ $.ajaxPrefilter( 'text', function( options ) {
     options.crossDomain = true;
 });
 
+/*
+Description: load the analytics.csv using ajax
+*/
 $.ajax({
     type: "GET",
     url: "analytics.csv",
@@ -74,6 +94,9 @@ $.ajax({
     }
  });
 
+/*
+Description: load the questions.csv using ajax
+*/
 $.ajax({
     type: "GET",
     url: "questions.csv",
@@ -88,7 +111,11 @@ $.ajax({
     }
  });
 
-//parse the analytics csv file
+/*
+Function name: parse_data
+Input: allText (str type) that load from the csv file
+Description: push the question titles to the question_title list
+*/
 function parse_data(allText){
 	var allTextLines = Papa.parse(allText).data;
 	var i;
@@ -103,7 +130,11 @@ function parse_data(allText){
 	}
 }
 
-//parse the question.csv file
+/*
+Function name: parse_data
+Input: allText (str type) that load from the csv file
+Description: push the question titles to the question_info list
+*/
 function parse(allText){
 	var question_number=1;
 	var allTextLines = Papa.parse(allText).data;
