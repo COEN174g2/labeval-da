@@ -1,4 +1,5 @@
 '''
+Author: Nam Tran
 This file contains code for the data analytics module. To run: python data_analytics.py [questions.csv] [answers.csv] [output_path_for_csv_file - optional]
 '''
 
@@ -14,7 +15,9 @@ import math
 plt.rcParams.update({'figure.max_open_warning': 0})
 
 def create_histogram(question_num, distribution_list):
-# creates histograms
+# Input: two lists of student and question distributions
+# Return type: N/A
+# Function: creates histograms
     answer_list = []
     for index, val in enumerate(distribution_list):
         for i in range(val):
@@ -37,14 +40,19 @@ def create_histogram(question_num, distribution_list):
     plt.savefig(output_path + "histogram_question_{}".format(question_num)) # saves the figure as a file
     
 def calc_mean(distribution_list):
-# calculates the mean
+# Input: a list of student and question distribution
+# Return type: float
+# Function: returns a mean value
     summation = 0
     for choice, num_responses in enumerate(distribution_list):
         summation+=(choice+1)*num_responses
     return summation/len(distribution_list)
 
 def calc_standard_deviation(distribution_list):
-# calculates std
+# Input: a list of student and question distribution
+# Return type: float
+# Function: returns std value
+
     list_of_responses = []
     for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
@@ -53,7 +61,9 @@ def calc_standard_deviation(distribution_list):
     return round(statistics.stdev(list_of_responses),1)
 
 def calc_median(distribution_list):
-# calculates median
+# Input: a list of student and question distribution
+# Return type: int
+# Function: returns median value
     list_of_responses = []
     for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
@@ -61,7 +71,9 @@ def calc_median(distribution_list):
     return statistics.median(list_of_responses)
 
 def calc_mode(distribution_list):
-# calculates mode
+# Input: a list of student and question distribution
+# Return type: int
+# Function: returns mode value
     list_of_responses = []
     for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
@@ -71,7 +83,9 @@ def calc_mode(distribution_list):
     return list(set(filter(lambda val: list_of_responses.count(val) == most, list_of_responses)))
 
 def write_csv():
-# writes csv
+# Input: N/A
+# Return type: N/A
+# Function: writes generated analytical values to a csv file.
     with open(output_path + "analytics.csv", mode = "w", newline = '') as out_file:
         file_writer = csv.writer(out_file, delimiter = ",", quotechar = '"', quoting = csv.QUOTE_MINIMAL)
         file_writer.writerow(["MULTIPLE_CHOICE QUESTION:"])
@@ -82,7 +96,9 @@ def write_csv():
             file_writer.writerow(row_content)
 
 def numerical_metrics(): 
-# generates numerical metrics
+# Input: N/A
+# Return type: N/A
+# Function: generates numerical values for various numerical metrics
     for key, distribution_list in numeric_question_dict.items():
         num_students_most_popular_choice = max(distribution_list)
         most_popular_choice = distribution_list.index(num_students_most_popular_choice) + 1 # the first answer choice starts at 1
@@ -101,7 +117,10 @@ def numerical_metrics():
         analytics_dict[key].extend(new_row)
 
 def sentiment_analysis():
-# performs sentiment analysis
+# Input: N/A
+# Return type: N/A
+# Function: performs sentiment analysis and generates relevant pie charts
+
     num_positive = 0
     num_negative = 0
     num_objective = 0
@@ -210,7 +229,9 @@ def sentiment_analysis():
     plt.savefig(output_path + "polarity_chart") # saves the figure as a file
             
 def parse():
-# parses the csv file
+# Input: N/A
+# Return type: N/A
+# Function: parses the raw csv data file.
     global student_count
 
     with open(questions_file) as csv_file:
@@ -244,7 +265,9 @@ def parse():
                     textual_question_dict[index+1] = []
 
 def main():
-
+# Input: N/A
+# Return type: N/A
+# Function: the main function that drives the entire module. 
     parse()
     print("Number of multiple choice questions: \n {}".format(list(question_type_dict.values()).count(1) + list(question_type_dict.values()).count(2))) # count number of multiple-choice questions
     print("------------------------------")
