@@ -15,7 +15,7 @@ import math
 plt.rcParams.update({'figure.max_open_warning': 0})
 
 def create_histogram(question_num, distribution_list):
-
+# creates histograms
     answer_list = []
     for index, val in enumerate(distribution_list):
         for i in range(val):
@@ -38,14 +38,14 @@ def create_histogram(question_num, distribution_list):
     plt.savefig(output_path + "histogram_question_{}".format(question_num)) # saves the figure as a file
     
 def calc_mean(distribution_list):
-
+# calculates the mean
     summation = 0
     for choice, num_responses in enumerate(distribution_list):
         summation+=(choice+1)*num_responses
     return summation/len(distribution_list)
 
 def calc_standard_deviation(distribution_list):
-
+# calculates std
     list_of_responses = []
     for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
@@ -54,7 +54,7 @@ def calc_standard_deviation(distribution_list):
     return round(statistics.stdev(list_of_responses),1)
 
 def calc_median(distribution_list):
-
+# calculates median
     list_of_responses = []
     for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
@@ -62,7 +62,7 @@ def calc_median(distribution_list):
     return statistics.median(list_of_responses)
 
 def calc_mode(distribution_list):
-
+# calculates mode
     list_of_responses = []
     for choice, num_responses in enumerate(distribution_list):
         for i in range(num_responses):
@@ -71,18 +71,8 @@ def calc_mode(distribution_list):
     most = max(list(map(list_of_responses.count, list_of_responses)))
     return list(set(filter(lambda val: list_of_responses.count(val) == most, list_of_responses)))
 
-
-def convert_to_string(list):
-    string = ""
-    for i in range(len(list)):
-        string += str(list[i])
-        if i+1 != len(list):
-            string += ','
-    return string
-
-
 def write_csv():
-
+# writes csv
     with open(output_path + "analytics.csv", mode = "w", newline = '') as out_file:
         file_writer = csv.writer(out_file, delimiter = ",", quotechar = '"', quoting = csv.QUOTE_MINIMAL)
         file_writer.writerow(["MULTIPLE_CHOICE QUESTION:"])
@@ -93,7 +83,7 @@ def write_csv():
             file_writer.writerow(row_content)
 
 def numerical_metrics(): 
-
+# generates numerical metrics
     for key, distribution_list in numeric_question_dict.items():
         num_students_most_popular_choice = max(distribution_list)
         most_popular_choice = distribution_list.index(num_students_most_popular_choice) + 1 # the first answer choice starts at 1
@@ -108,11 +98,11 @@ def numerical_metrics():
         create_histogram(key, distribution_list)
 
         analytics_dict[key] = []
-        new_row = ["multiple_choice",key, most_popular_choice, calc_mean(distribution_list), convert_to_string(calc_mode(distribution_list)), calc_median(distribution_list), calc_standard_deviation(distribution_list)]
+        new_row = ["multiple_choice",key, most_popular_choice, calc_mean(distribution_list), calc_mode(distribution_list), calc_median(distribution_list), calc_standard_deviation(distribution_list)]
         analytics_dict[key].extend(new_row)
 
 def sentiment_analysis():
-
+# performs sentiment analysis
     num_positive = 0
     num_negative = 0
     num_objective = 0
@@ -221,7 +211,7 @@ def sentiment_analysis():
     plt.savefig(output_path + "polarity_chart") # saves the figure as a file
             
 def parse():
-
+# parses the csv file
     global student_count
 
     with open(questions_file) as csv_file:
@@ -254,57 +244,6 @@ def parse():
                 elif question_type_dict[index+1] == 3:
                     textual_question_dict[index+1] = []
 
-def tcp_server():
-
-    port = 60000                    # Reserve a port for your service.
-    s = socket.socket()             # Create a socket object
-    host = socket.gethostname()     # Get local machine name
-    s.bind((host, port))            # Bind to the port
-    s.listen(5)                     # Now wait for client connection.
-
-    print('Server listening....')
-
-    while True:
-        conn, addr = s.accept()     # Establish connection with client.
-        print("Got connection from {}".format(addr))
-        data = conn.recv(1024)
-        print('Server received', repr(data))
-
-        html_file_name = "data_analytics.html"
-        html_file = open(html_file_name,"rb")
-        l = html_file.read(1024)
-
-        while (l):
-           conn.send(l)
-           print("Sent {}".format(repr(l)))
-           l = html_file.read(1024)
-
-        css_file_name = "data_analytics.css"
-        css_file = open(css_file_name,"rb")
-        l = css_file.read(1024)
-
-        while (l):
-           conn.send(l)
-           print("Sent {}".format(repr(l)))
-           l = css_file.read(1024)
-
-        js_file_name = "data_analytics.js"
-        js_file = open(js_file_name,"rb")
-        l = js_file.read(1024)
-
-        while (l):
-           conn.send(l)
-           print("Sent {}".format(repr(l)))
-           l = js_file.read(1024)
-
-        html_file.close()
-        css_file.close()
-        js_file.close()
-
-
-        print("Done sending")
-        conn.close()
-
 def main():
 
     parse()
@@ -319,7 +258,6 @@ def main():
     numerical_metrics()
     sentiment_analysis()
     write_csv()
-    #tcp_server()
 
 question_type_dict = {} 
 analytics_dict = {} # processed results in the form of a dictionary for output to csv
